@@ -1,9 +1,6 @@
-﻿using System;
+﻿using StackExchange.Redis;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SampleAppTest
@@ -25,13 +22,20 @@ namespace SampleAppTest
             List<UsersDto> userList = new List<UsersDto>();
             foreach (var user in users)
             {
-                UserModel userModel   = _cacheService.getFromCache("UserModel" + user);
-                if (userModel == null)
+                UserModel userModel;
+                try {
+                    userModel = _cacheService.getFromCache($"UserModel_{user}");
+                    if (userModel == null)
+                    {
+                        userModel = await _userApiRepository.ReteriveUsers(user);
+                        _cacheService.updateCache($"UserModel_{user}", userModel);
+                    }
+                }
+                catch (RedisConnectionException)
                 {
                     userModel = await _userApiRepository.ReteriveUsers(user);
-                    _cacheService.updateCache("UserModel" + user, userModel);
                 }
-                if(userModel.id != 0) { 
+                if (userModel.id != 0) { 
                     UsersDto usersDto = transFormModelToDto(userModel);
                     userList.Add(usersDto);
                 }

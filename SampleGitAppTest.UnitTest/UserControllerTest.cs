@@ -1,10 +1,7 @@
 using Moq;
 using SampleAppTest.Controllers;
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
-using System.Text.Json;
 
 namespace SampleAppTest.UnitTest
 

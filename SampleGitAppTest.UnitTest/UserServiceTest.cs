@@ -1,9 +1,5 @@
-using Microsoft.Extensions.Caching.Memory;
 using Moq;
-using SampleAppTest.Controllers;
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace SampleAppTest.UnitTest

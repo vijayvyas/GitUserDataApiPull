@@ -1,30 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
+﻿using StackExchange.Redis;
+using System;
+using System.Text.Json;
 
 namespace SampleAppTest
 {
     public class RedisCacheService<T> : ICacheService<T> where T:class
     {
-        readonly IMemoryCache _memoryCache;
-        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions()
-       .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+        private readonly IConnectionMultiplexer _connectionMultiplexer;
+        IDatabase db;
 
-        public RedisCacheService(IMemoryCache memoryCache)
+        public RedisCacheService(IConnectionMultiplexer connectionMultiplexer)
         {
-            _memoryCache = memoryCache;
+            _connectionMultiplexer = connectionMultiplexer;
+         
+            db = _connectionMultiplexer.GetDatabase();
         }
+
+        private static TimeSpan experation = TimeSpan.FromMinutes(2);
 
         T ICacheService<T>.getFromCache(string key)
         {
-            return _memoryCache.Get<T>(key);
+            try
+            {
+                var value = db.StringGet(key);
+                if (!value.IsNull)
+                    return JsonSerializer.Deserialize<T>(value);
+                else
+                {
+                    return default(T);
+                }
+             }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         void ICacheService<T>.updateCache(string key, T Obj)
         {
-            _memoryCache.Set(key, Obj, cacheEntryOptions);
+            db.StringSet(key, JsonSerializer.Serialize(Obj), experation);
         }
     }
 }

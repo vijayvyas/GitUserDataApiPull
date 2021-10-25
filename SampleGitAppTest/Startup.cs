@@ -1,15 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SampleAppTest
 {
@@ -32,7 +27,18 @@ namespace SampleAppTest
        
             services.AddSingleton<IUserApiService, UserApiServiceImpl>();
             services.AddSingleton<IUserApiRepository, UserApiRepository>();
-            services.AddSingleton(typeof(ICacheService<>), typeof(CacheService<>));
+            services.AddSingleton(typeof(ICacheService<>), typeof(RedisCacheService<>));
+            services.AddSingleton<IConnectionMultiplexer>(c => {
+
+                ConfigurationOptions option = new ConfigurationOptions
+                {
+                    AbortOnConnectFail = false,
+                    EndPoints = { Configuration.GetValue<string>("redisConnection") }
+                };
+                return ConnectionMultiplexer.Connect(option);
+                
+                });
+
             services.AddHttpClient("PublicGitApi", c => c.BaseAddress = new Uri("https://api.github.com/"));
 
             services.AddHttpClient("PublicHolidaysApi", c => c.BaseAddress = new Uri("https://date.nager.at"));

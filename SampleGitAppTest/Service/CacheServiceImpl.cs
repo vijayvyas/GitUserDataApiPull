@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
+using System;
 
 namespace SampleAppTest
 {
     public class CacheService<T> : ICacheService<T> where T:class
     {
-        readonly IMemoryCache _memoryCache;
+        private readonly IMemoryCache _memoryCache;
         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions()
        .SetSlidingExpiration(TimeSpan.FromMinutes(2));
 

@@ -109,3 +109,5 @@ D:\SampleGitApp\SampleGitAppTest.UnitTest\obj\Debug\netcoreapp3.1\SampleGitAppTe
 D:\SampleGitApp\SampleGitAppTest.UnitTest\obj\Debug\netcoreapp3.1\SampleGitAppTest.UnitTest.dll
 D:\SampleGitApp\SampleGitAppTest.UnitTest\obj\Debug\netcoreapp3.1\SampleGitAppTest.UnitTest.pdb
 D:\SampleGitApp\SampleGitAppTest.UnitTest\obj\Debug\netcoreapp3.1\SampleGitAppTest.UnitTest.genruntimeconfig.cache
+D:\SampleGitApp\SampleGitAppTest.UnitTest\bin\Debug\netcoreapp3.1\Validation.dll
+D:\SampleGitApp\SampleGitAppTest.UnitTest\bin\Debug\netcoreapp3.1\Xunit.SkippableFact.dll
