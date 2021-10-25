@@ -24,17 +24,15 @@ namespace SampleAppTest
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             services.AddControllers();
             services.AddMemoryCache();
-            services.AddTransient(typeof(RedisCacheService));
-       
             services.AddSingleton<IUserApiService, UserApiService>();
             services.AddSingleton<IUserApiRepository, UserApiRepository>();
-            services.AddTransient(typeof(CacheService));
-            services.AddTransient(typeof(RedisCacheService));
-            services.AddTransient<Func<ICacheService>>(serviceProvider => () =>
+            //services.AddSingleton<ICacheService, RedisCacheService>();
+            services.AddTransient<CacheService>();
+            services.AddTransient<RedisCacheService>();
+
+            services.AddSingleton<ICacheService>(serviceProvider =>
             {
                 switch (Configuration.GetValue<string>("CacheType"))
                 {
@@ -45,7 +43,8 @@ namespace SampleAppTest
                 }
             });
 
-            services.AddSingleton<IConnectionMultiplexer>(c => {
+            services.AddSingleton<IConnectionMultiplexer>(c =>
+            {
 
                 ConfigurationOptions option = new ConfigurationOptions
                 {
@@ -53,8 +52,8 @@ namespace SampleAppTest
                     EndPoints = { Configuration.GetValue<string>("redisConnection") }
                 };
                 return ConnectionMultiplexer.Connect(option);
-                
-                });
+
+            });
             services.Configure<CacheConfiguration>(Configuration.GetSection("CacheTimeConfiguration"));
 
             services.AddHttpClient("PublicGitApi", c => c.BaseAddress = new Uri(Configuration.GetValue<string>("GitUrl")));
