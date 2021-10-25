@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SampleGitAppTest;
 using StackExchange.Redis;
 using System;
+using System.Net;
 
 namespace SampleAppTest
 {
@@ -21,13 +25,26 @@ namespace SampleAppTest
         public void ConfigureServices(IServiceCollection services)
         {
 
+
             services.AddControllers();
             services.AddMemoryCache();
-            services.AddTransient(typeof(RedisCacheService<>));
+            services.AddTransient(typeof(RedisCacheService));
        
-            services.AddSingleton<IUserApiService, UserApiServiceImpl>();
+            services.AddSingleton<IUserApiService, UserApiService>();
             services.AddSingleton<IUserApiRepository, UserApiRepository>();
-            services.AddSingleton(typeof(ICacheService<>), typeof(RedisCacheService<>));
+            services.AddTransient(typeof(CacheService));
+            services.AddTransient(typeof(RedisCacheService));
+            services.AddTransient<Func<ICacheService>>(serviceProvider => () =>
+            {
+                switch (Configuration.GetValue<string>("CacheType"))
+                {
+                    case "Redis":
+                        return serviceProvider.GetService<RedisCacheService>();
+                    default:
+                        return serviceProvider.GetService<CacheService>();
+                }
+            });
+
             services.AddSingleton<IConnectionMultiplexer>(c => {
 
                 ConfigurationOptions option = new ConfigurationOptions
@@ -38,19 +55,16 @@ namespace SampleAppTest
                 return ConnectionMultiplexer.Connect(option);
                 
                 });
+            services.Configure<CacheConfiguration>(Configuration.GetSection("CacheTimeConfiguration"));
 
-            services.AddHttpClient("PublicGitApi", c => c.BaseAddress = new Uri("https://api.github.com/"));
-
-            services.AddHttpClient("PublicHolidaysApi", c => c.BaseAddress = new Uri("https://date.nager.at"));
+            services.AddHttpClient("PublicGitApi", c => c.BaseAddress = new Uri(Configuration.GetValue<string>("GitUrl")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+
+            app.ConfigExceptionHandler(env);
 
             app.UseHttpsRedirection();
 

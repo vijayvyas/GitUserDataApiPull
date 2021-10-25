@@ -13,7 +13,7 @@ namespace SampleAppTest
         {
             client = clientFactory.CreateClient("PublicGitApi");
         }
-        //https://localhost:44399/user?users=vijayvyas
+
         public async Task<UserModel> ReteriveUsers(string user)
         //public UserModel ReteriveUsers(string users)
         {

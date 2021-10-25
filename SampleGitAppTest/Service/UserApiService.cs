@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace SampleAppTest
 {
-    public class UserApiServiceImpl:IUserApiService
+    public class UserApiService:IUserApiService
     {
         IUserApiRepository _userApiRepository;
 
-        private ICacheService<UserModel> _cacheService;
+        private ICacheService _cacheService;
 
-        public UserApiServiceImpl(IUserApiRepository userApiRepository, ICacheService<UserModel> cacheService)
+        public UserApiService(IUserApiRepository userApiRepository, ICacheService cacheService)
         {
             _userApiRepository = userApiRepository;
             _cacheService = cacheService;
@@ -24,7 +24,7 @@ namespace SampleAppTest
             {
                 UserModel userModel;
                 try {
-                    userModel = _cacheService.getFromCache($"UserModel_{user}");
+                    userModel = _cacheService.getFromCache<UserModel>($"UserModel_{user}");
                     if (userModel == null)
                     {
                         userModel = await _userApiRepository.ReteriveUsers(user);

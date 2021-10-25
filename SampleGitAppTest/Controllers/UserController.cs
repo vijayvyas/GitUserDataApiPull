@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace SampleAppTest.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : Controller
     {
-
         private readonly IUserApiService _userApiService;
 
         public UserController(IUserApiService userApiService)

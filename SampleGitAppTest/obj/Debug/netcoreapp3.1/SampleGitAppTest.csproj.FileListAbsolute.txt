@@ -21,3 +21,7 @@ D:\SampleGitApp\SampleGitAppTest\obj\Debug\netcoreapp3.1\SampleGitAppTest.RazorT
 D:\SampleGitApp\SampleGitAppTest\obj\Debug\netcoreapp3.1\SampleGitAppTest.dll
 D:\SampleGitApp\SampleGitAppTest\obj\Debug\netcoreapp3.1\SampleGitAppTest.pdb
 D:\SampleGitApp\SampleGitAppTest\obj\Debug\netcoreapp3.1\SampleGitAppTest.genruntimeconfig.cache
+D:\SampleGitApp\SampleGitAppTest\bin\Debug\netcoreapp3.1\System.Net.Http.Formatting.dll
+D:\SampleGitApp\SampleGitAppTest\bin\Debug\netcoreapp3.1\System.Web.Http.dll
+D:\SampleGitApp\SampleGitAppTest\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+D:\SampleGitApp\SampleGitAppTest\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll

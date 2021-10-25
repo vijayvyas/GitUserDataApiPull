@@ -11,7 +11,7 @@ namespace SampleAppTest.UnitTest
 
         public Mock<IUserApiRepository> repoMoc = new Mock<IUserApiRepository>();
 
-        public Mock<ICacheService<UserModel>> cacheMoc = new Mock<ICacheService<UserModel>>();
+        public Mock<ICacheService> cacheMoc = new Mock<ICacheService>();
 
         IUserApiService userApiServiceImpl;
         
@@ -39,7 +39,7 @@ namespace SampleAppTest.UnitTest
             "waqasdotnet"
 
         };
-            userApiServiceImpl = new UserApiServiceImpl(repoMoc.Object, cacheMoc.Object);
+            userApiServiceImpl = new UserApiService(repoMoc.Object, cacheMoc.Object);
             repoMoc.Setup(p => p.ReteriveUsers(users[0])).ReturnsAsync(userModel);
             var result = await userApiServiceImpl.ReteriveUsers(users);
             Assert.True(userDto.Id.Equals(result[0].Id));
@@ -77,7 +77,7 @@ namespace SampleAppTest.UnitTest
             "abc"
 
         };
-            userApiServiceImpl = new UserApiServiceImpl(repoMoc.Object, cacheMoc.Object);
+            userApiServiceImpl = new UserApiService(repoMoc.Object, cacheMoc.Object);
             repoMoc.Setup(p => p.ReteriveUsers(users[0])).ReturnsAsync(userModel);
             repoMoc.Setup(p => p.ReteriveUsers(users[1])).ReturnsAsync(userModel1);
             var result = await userApiServiceImpl.ReteriveUsers(users);

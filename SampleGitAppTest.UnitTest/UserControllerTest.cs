@@ -13,7 +13,7 @@ namespace SampleAppTest.UnitTest
 
         public Mock<IUserApiRepository> mock = new Mock<IUserApiRepository>();
 
-        public Mock<ICacheService<UserModel>> ICacheServiceObj = new Mock<ICacheService<UserModel>>();
+        public Mock<ICacheService> ICacheServiceObj = new Mock<ICacheService>();
 
         UserController userController;
 

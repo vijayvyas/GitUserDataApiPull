@@ -1,9 +1,9 @@
 ﻿namespace SampleAppTest
 {
-    public interface ICacheService<T> where T:class
+    public interface ICacheService
     {
-        void updateCache(string key, T userModel);
+        void updateCache<T>(string key, T Value);
 
-        T getFromCache(string key);
+        T getFromCache<T>(string key);
     }
 }

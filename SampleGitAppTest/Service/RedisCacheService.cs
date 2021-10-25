@@ -1,24 +1,31 @@
-﻿using StackExchange.Redis;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using System;
 using System.Text.Json;
 
 namespace SampleAppTest
 {
-    public class RedisCacheService<T> : ICacheService<T> where T:class
+    public class RedisCacheService : ICacheService
     {
         private readonly IConnectionMultiplexer _connectionMultiplexer;
-        IDatabase db;
+        private readonly IDatabase db;
+        private readonly TimeSpan expiration;
+        private readonly CacheConfiguration _cacheConfig;
 
-        public RedisCacheService(IConnectionMultiplexer connectionMultiplexer)
+        public RedisCacheService(IConnectionMultiplexer connectionMultiplexer, IConfiguration configuration, IOptions<CacheConfiguration> cacheConfig)
         {
             _connectionMultiplexer = connectionMultiplexer;
-         
+            _cacheConfig = cacheConfig.Value;
             db = _connectionMultiplexer.GetDatabase();
+            if (_cacheConfig != null)
+            {
+                expiration = TimeSpan.FromMinutes(_cacheConfig.ExpirationInMinutes);
+            }
         }
+     
 
-        private static TimeSpan experation = TimeSpan.FromMinutes(2);
-
-        T ICacheService<T>.getFromCache(string key)
+        T ICacheService.getFromCache<T>(string key)
         {
             try
             {
@@ -36,9 +43,9 @@ namespace SampleAppTest
             }
         }
 
-        void ICacheService<T>.updateCache(string key, T Obj)
+        void ICacheService.updateCache<T>(string key, T Obj)
         {
-            db.StringSet(key, JsonSerializer.Serialize(Obj), experation);
+            db.StringSet(key, JsonSerializer.Serialize(Obj), expiration);
         }
     }
 }
